@@ -19,20 +19,31 @@ This repository contains the code for my job market paper.
 
 In the following code-files, you will be able to generate all figures and tables appearing in the paper
 
+	--------------------------------- Created in Stata --------------------------------------
 	1) 7a.GraphTable_Evidence.do
-      Table 1, Table 2, Figure 1, Table 3, Figure 2, Table 4
-
+	  Table 1, Table 2, Figure 1, Table 3, Figure 2, Table 4
+	
 	2) 7b.GraphTable_SpatialEvidence.do
-      Figure 3, Table 5
-
+	  Figure 3, Table 5
+	
 	3) 8.Program_OuterPFE
-      Table 7
-
+	  Table 7
+	
 	4) 9.Program_EnergyPFE
-      Table 8, Table 9, Figure 4, Table 11
-
+	  Table 8, Table 9, Figure 4, Table 11
+	
 	5) 10.Graphs_PostDynamics.do
-      Figure 5
-
+	  Figure 5
+	
 	6) 11.Appendix_GraphsTables.do
-      All tables and figures in the appendix
+	  Tables and figures in the appendix, excl. counterfactual
+	
+	--------------------------------- Created in Julia --------------------------------------
+	7) 2.PostEstimation_ModelFit.jl
+	  Table 10, Table 12, Figure 5, Figure 6, Figure 7
+	  Appendix: Figure 27, Figure 28, Figure 29
+	
+	8) 4.Counterfactual_CompareModels-graphs.jl
+	  Figure 8, Figure 9, Table 14, Table 15
+	
+
