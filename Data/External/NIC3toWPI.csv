@@ -1,0 +1,72 @@
+Commodity name,Commodity code,NIC group,NIC group description
+(A)  Food Products,1301000000,101,Processing and preserving of mea
+(A)  Food Products,1301000000,102,"Processing and preserving of fish, crustaceans and molluscs"
+(A)  Food Products,1301000000,103,Processing and preserving of fruit and vegetable
+(A)  Food Products,1301000000,104,Manufacture of vegetable and animal oils and fats
+(A)  Food Products,1301000000,105,Manufacture of dairy products
+(A)  Food Products,1301000000,106,"Manufacture of grain mill products, starches and starch products"
+(A)  Food Products,1301000000,107,Manufacture of other food products
+(A)  Food Products,1301000000,108,Manufacture of prepared animal feeds
+(B)  Beverages Tobacco & Tobacco Products,1302000000,110,Manufacture of beverages
+(B)  Beverages Tobacco & Tobacco Products,1302000000,120,Manufacture of tobacco products [ tobacco related products are also included while preliminary processing of tobacco leaves is classified in class 0111]
+(C)  Textiles,1303000000,131,"Spinning, weaving and finishing of textiles."
+(C)  Textiles,1303000000,139,Manufacture of other textiles
+(C)  Textiles,1303000000,143,Manufacture of knitted and crocheted fabrics and articles
+(C)  Textiles,1303000000,141,"Manufacture of wearing apparel, except fur apparel [this class includes manufacture of wearing apparel made of material not made in the same unit. Both regular and contract activities are included]"
+(C)  Textiles,1303000000,142,Dressing and dyeing of fur; manufacture of articles of fur
+(F)  Leather & Leather Products,1306000000,151,"Tanning and dressing of leather, manufacture of luggage handbags, saddlery & harness."
+(F)  Leather & Leather Products,1306000000,152,Manufacture of footwear.
+(D)  Wood & Wood Products,1304000000,161,Saw milling and planing of wood
+(D)  Wood & Wood Products,1304000000,162,"Manufacture of products of wood, cork, straw and plaiting materials"
+(E)  Paper & Paper Products,1305000000,170,Manufacture of paper and paper product
+(E)  Paper & Paper Products,1305000000,581,"Publishing [This group includes publishing whether or not connected with publishing. Publishing involves financial, technical, artistic, legal and marketing activities, among others but not predominantly]"
+(E)  Paper & Paper Products,1305000000,181,Printing and service activities related to printing
+(E)  Paper & Paper Products,1305000000,182,"Reproduction of recorded media [This class includes reproduction of records, audio, video and computer tapes from master copies, reproduction of floppy, hard or compact disks, reproduction of non-customised software and film duplicating]"
+II  FUEL POWER LIGHT & LUBRICANTS,1200000000,191,"Manufacture of coke oven products [This class includes the operation of coke ovens chiefly for the production of coke or semi-coke from hard coal and lignite, retort carbon and residual products such as coal tar or pitch. Agglomeration of coke."
+II  FUEL POWER LIGHT & LUBRICANTS,1200000000,192,Manufacture of refined petroleum products
+(H)  Chemicals & Chemical Products,1308000000,201,Manufacture of basic chemicals
+(H)  Chemicals & Chemical Products,1308000000,202,Manufacture of other chemical products
+(H)  Chemicals & Chemical Products,1308000000,203,Manufacture of man-made fibers [This class includes manufacture of artificial or synthetic filament and non-filament fibers.]
+(G)  Rubber & Plastic Products,1307000000,221,Manufacture of rubber products
+(G)  Rubber & Plastic Products,1307000000,222,Manufacture of plastic products
+(I)  Non-Metallic Mineral Products,1309000000,231,Manufacture of glass and glass products
+(I)  Non-Metallic Mineral Products,1309000000,239,Manufacture of non-metallic mineral products n.e.c.
+(J)  Basic Metals Alloys & Metals Products,1310000000,241,Manufacture of Basic Iron & Steel
+(J)  Basic Metals Alloys & Metals Products,1310000000,242,Manufacture of basic precious and non-ferrous metals
+(J)  Basic Metals Alloys & Metals Products,1310000000,243,"Casting of metals  [This group includes casting finished or semi-finished products producing a variety of goods, all characteristic of other activity classes]"
+(J)  Basic Metals Alloys & Metals Products,1310000000,251,"Manufacture of structural metal products, tanks, reservoirs and steam generators"
+(J)  Basic Metals Alloys & Metals Products,1310000000,252,Manufacture of weapons and ammunition
+(J)  Basic Metals Alloys & Metals Products,1310000000,259,Manufacture of other fabricated metal products; metal working service activities
+(K)  Machinery & Machine Tools,1311000000,261,Manufacture of electronic components
+(K)  Machinery & Machine Tools,1311000000,262,Manufacture of computers and peripheral equipment
+(K)  Machinery & Machine Tools,1311000000,263,Manufacture of communication equipment
+(K)  Machinery & Machine Tools,1311000000,264,Manufacture of consumer electronics
+(K)  Machinery & Machine Tools,1311000000,265,"Manufacture of measuring, testing, navigating and control equipment; watches and clocks"
+(K)  Machinery & Machine Tools,1311000000,266,"Manufacture of irradiation, electromedical and electrotherapeutic equipment"
+(K)  Machinery & Machine Tools,1311000000,267,Manufacture of optical instruments and equipment
+(K)  Machinery & Machine Tools,1311000000,268,Manufacture of magnetic and optical media
+(K)  Machinery & Machine Tools,1311000000,281,Manufacture of general purpose machinery
+(K)  Machinery & Machine Tools,1311000000,282,Manufacture of special purpose machinery
+(K)  Machinery & Machine Tools,1311000000,271,"Manufacture of electric motors, generators and transformers"
+(K)  Machinery & Machine Tools,1311000000,275,Manufacture of domestic appliances
+(K)  Machinery & Machine Tools,1311000000,273,"Manufacture of insulated wire and cable [insulated (including enamelled or anodized) wire, cable (including coaxial cable) and other insulated conductors; insulated strip as is used in large capacity machines or control equipment; and optical f"
+(K)  Machinery & Machine Tools,1311000000,272,"Manufacture of accumulators, primary cells and primary batteries"
+(K)  Machinery & Machine Tools,1311000000,274,Manufacture of electric lamps and lighting equipment
+(K)  Machinery & Machine Tools,1311000000,279,Manufacture of other electrical equipment n.e.c.
+(L)  Transport Equipment & Parts,1312000000,291,Manufacture of motor vehicles
+(L)  Transport Equipment & Parts,1312000000,292,Manufacture of bodies (coach work) for motor vehicles; manufacture of  trailers and semi-trailers
+(L)  Transport Equipment & Parts,1312000000,293,"Manufacture of parts and accessories for motor vehicles and their engines [brakes, gear boxes, axles, road wheels, suspension shock absorbers, radiators, silencers, exhaust pipes, clutches, steering wheels, steering columns and steering boxes a"
+(L)  Transport Equipment & Parts,1312000000,301,Building and repair of ships & boats
+(L)  Transport Equipment & Parts,1312000000,302,Manufacture of railway and tramway locomotives and rolling stock
+(L)  Transport Equipment & Parts,1312000000,303,Manufacture of aircraft and spacecraft
+(L)  Transport Equipment & Parts,1312000000,304,Manufacture of military fighting vehicles
+(L)  Transport Equipment & Parts,1312000000,309,Manufacture of transport equipment n.e.c.
+Steel furnitures,1310030006,310,Manufacture of furniture
+III  MANUFACTURED PRODUCTS,1300000000,321,"Manufacture of jewellery, bijouterie and related articles"
+III  MANUFACTURED PRODUCTS,1300000000,322,Manufacture of musical instruments
+III  MANUFACTURED PRODUCTS,1300000000,323,Manufacture of sports goods
+III  MANUFACTURED PRODUCTS,1300000000,324,Manufacture of games and toys
+III  MANUFACTURED PRODUCTS,1300000000,325,Manufacture of medical and dental instruments and supplies
+III  MANUFACTURED PRODUCTS,1300000000,329,Other manufacturing n.e.c.
+(K)  Machinery & Machine Tools,1311000000,331,"Repair of fabricated metal products, machinery and equipment"
+(K)  Machinery & Machine Tools,1311000000,332,Installation of industrial machinery and equipment
