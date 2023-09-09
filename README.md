@@ -9,7 +9,7 @@
 ## Contact: emurrayl@uwo.ca
 
 ### Last updated: August 2023
-### The following details are applicable to the August 9th 2023 version of the paper, available here: [emurraylJMP_aug2023](https://drive.google.com/file/d/1m2pWI3mbry4ZGm_G2nSWaOl3tnAdhogW/view?usp=drive_link)
+### The following details are applicable to the August 17th 2023 version of the paper, available here: [emurraylJMP_aug2023](https://drive.google.com/file/d/1J4am43imZd3f3-ruPvSuxbK_UZN_2tfD/view?usp=sharing)
 
 This repository contains the code for my job market paper.
 
@@ -45,5 +45,5 @@ In the following code-files, you will be able to generate all figures and tables
 	
 	8) 4.Counterfactual_CompareModels-graphs.jl
 	  Figure 8, Figure 9, Table 14, Table 15
-	
+
 
