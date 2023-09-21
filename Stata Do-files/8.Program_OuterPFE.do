@@ -531,7 +531,7 @@ gen r = .
 levelsof nic08_4d, local(ind)
 local iter_ind = 1
 foreach j of local ind {
-	mat param_init = 0.5
+	mat param_init = 0.2
 	gmm gmm1 if nic08_4d == `j', one nequations(4) parameters(r) winitial(identity) rhs(E_struc M_struc K L ak al am ae eta w_tilde Pe Pm Yqty Ygmean rk_tilde pout sig rho theta N d0 pout_agg gam) from(param_init) conv_maxiter(100)
 	replace r = _b[/r] if nic08_4d == `j'
 }

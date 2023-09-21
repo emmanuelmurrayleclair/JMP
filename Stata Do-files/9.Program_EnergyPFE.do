@@ -216,65 +216,65 @@ foreach j of local ind {
 	replace ll = _b[/ll] if nic08_4d == `j'
 }
 
-* Get 95% confidence intervals (delta method)
-levelsof nic08_4d, local(ind)
-foreach j of local ind {
-	mat ci_`j' = J(2,2,.)
-	scalar var_`j' = param_var_`j'[2,2]
-	su b1_tilde if nic08_4d == `j'
-	scalar se_ll_`j' = sqrt(var_`j'*((-1/((r(mean)-1)^2))^2))	
-	scalar se_rho_`j' = sqrt(param_var_`j'[1,1]) 
-	su ll if nic08_4d == `j'
-	mat ci_`j'[1,1] = r(mean)-(3.291*se_ll_`j')
-	mat ci_`j'[1,2] = r(mean)+(3.291*se_ll_`j')
-	su rho_eprod if nic08_4d == `j'
-	mat ci_`j'[2,1] = r(mean)-(3.291*se_rho_`j')
-	mat ci_`j'[2,2] = r(mean)+(3.291*se_rho_`j')
-}
-* Construct table of results
-preserve
-file close _all
-file open PFE_results using "Output/Tables/EnergyPFE/PFE_estimate-Steel.tex", write replace
-*file write PFE_results "& Casting of Steel \& Iron & Cement & Basic Steel \\"_n
-file write PFE_results "\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}"_n
-file write PFE_results "\caption{Estimates of Energy Production Function}"_n
-file write PFE_results "\begin{tabular}{l*{1}{c}}"_n
-file write PFE_results "\toprule\hline"_n
-file write PFE_results "& \multicolumn{1}{c}{Steel} \\"_n
-file write PFE_results "\midrule"_n
-* lamda estimate
-file write PFE_results "Elasticity of substitution $\hat\lambda$"
-su ll if nic08_4d == 2410
-local llhat: di %4.3f r(mean)
-file write PFE_results "&`llhat'\sym{***}"
-file write PFE_results "\\"_n
-* lambda standard error
-local ll_se_hat: di %4.3f se_ll_2410
-file write PFE_results "&(`ll_se_hat')"
-file write PFE_results "\\"_n
-
-* rho estimate
-file write PFE_results "Persistence of electricity productivity $\hat\rho_{\psi_e}$"
-su rho_eprod if nic08_4d == 2410
-local rhohat: di %4.3f r(mean)
-file write PFE_results "&`rhohat'\sym{***}"
-file write PFE_results "\\"_n
-* rho standard error
-local rho_se_hat: di %4.3f se_rho_2410
-file write PFE_results "&(`rho_se_hat')"
-file write PFE_results "\\"_n
-* Observations
-file write PFE_results "\midrule"_n
-file write PFE_results "Observations"
-local n_2410: di n_2410
-file write PFE_results "&`n_2410'"
-file write PFE_results "\\"_n
-file write PFE_results "\hline\bottomrule"_n
-file write PFE_results "\multicolumn{2}{l}{\footnotesize Standard errors in parentheses} \\"_n
-file write PFE_results "\multicolumn{2}{l}{\footnotesize \sym{+} \(p<0.1\), \sym{*} \(p<0.05\), \sym{**} \(p<0.01\), \sym{***} \(p<0.001\)} \\"_n
-file write PFE_results "\end{tabular}"_n
-file close _all
-restore
+// * Get 95% confidence intervals (delta method)
+// levelsof nic08_4d, local(ind)
+// foreach j of local ind {
+// 	mat ci_`j' = J(2,2,.)
+// 	scalar var_`j' = param_var_`j'[2,2]
+// 	su b1_tilde if nic08_4d == `j'
+// 	scalar se_ll_`j' = sqrt(var_`j'*((-1/((r(mean)-1)^2))^2))	
+// 	scalar se_rho_`j' = sqrt(param_var_`j'[1,1]) 
+// 	su ll if nic08_4d == `j'
+// 	mat ci_`j'[1,1] = r(mean)-(3.291*se_ll_`j')
+// 	mat ci_`j'[1,2] = r(mean)+(3.291*se_ll_`j')
+// 	su rho_eprod if nic08_4d == `j'
+// 	mat ci_`j'[2,1] = r(mean)-(3.291*se_rho_`j')
+// 	mat ci_`j'[2,2] = r(mean)+(3.291*se_rho_`j')
+// }
+// * Construct table of results
+// preserve
+// file close _all
+// file open PFE_results using "Output/Tables/EnergyPFE/PFE_estimate-Steel.tex", write replace
+// *file write PFE_results "& Casting of Steel \& Iron & Cement & Basic Steel \\"_n
+// file write PFE_results "\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}"_n
+// file write PFE_results "\caption{Estimates of Energy Production Function}"_n
+// file write PFE_results "\begin{tabular}{l*{1}{c}}"_n
+// file write PFE_results "\toprule\hline"_n
+// file write PFE_results "& \multicolumn{1}{c}{Steel} \\"_n
+// file write PFE_results "\midrule"_n
+// * lamda estimate
+// file write PFE_results "Elasticity of substitution $\hat\lambda$"
+// su ll if nic08_4d == 2410
+// local llhat: di %4.3f r(mean)
+// file write PFE_results "&`llhat'\sym{***}"
+// file write PFE_results "\\"_n
+// * lambda standard error
+// local ll_se_hat: di %4.3f se_ll_2410
+// file write PFE_results "&(`ll_se_hat')"
+// file write PFE_results "\\"_n
+//
+// * rho estimate
+// file write PFE_results "Persistence of electricity productivity $\hat\rho_{\psi_e}$"
+// su rho_eprod if nic08_4d == 2410
+// local rhohat: di %4.3f r(mean)
+// file write PFE_results "&`rhohat'\sym{***}"
+// file write PFE_results "\\"_n
+// * rho standard error
+// local rho_se_hat: di %4.3f se_rho_2410
+// file write PFE_results "&(`rho_se_hat')"
+// file write PFE_results "\\"_n
+// * Observations
+// file write PFE_results "\midrule"_n
+// file write PFE_results "Observations"
+// local n_2410: di n_2410
+// file write PFE_results "&`n_2410'"
+// file write PFE_results "\\"_n
+// file write PFE_results "\hline\bottomrule"_n
+// file write PFE_results "\multicolumn{2}{l}{\footnotesize Standard errors in parentheses} \\"_n
+// file write PFE_results "\multicolumn{2}{l}{\footnotesize \sym{+} \(p<0.1\), \sym{*} \(p<0.05\), \sym{**} \(p<0.01\), \sym{***} \(p<0.001\)} \\"_n
+// file write PFE_results "\end{tabular}"_n
+// file close _all
+// restore
 
 *******************************************************
 ***	5. Recover distribution of fuel productivity 
@@ -369,93 +369,124 @@ foreach f in o g c e {
 *******************************************************************
 
 * Distribution of fuel productivity per mmBtu across fuel sets
-preserve 
-	* Keep plants I use to estimate production function
-	drop if LcombineF == . & FcombineF == .
-	keep IDnum year combineF rfprod_dollar_o rfprod_dollar_e lnrfprod_dollar_o lnrfprod_dollar_e rfprod_qty_o rfprod_qty_e lnrfprod_qty_o lnrfprod_qty_e FcombineF ///
-			rfprod_dollar_g rfprod_dollar_c lnrfprod_dollar_g lnrfprod_dollar_c rfprod_qty_g rfprod_qty_c lnrfprod_qty_g lnrfprod_qty_c 
-			
-	* Demean productivity
-	reg lnrfprod_qty_e 
-	predict lnrfprod_avg, xb
-	foreach f in e o g c {
-		replace lnrfprod_qty_`f' = lnrfprod_qty_`f' - lnrfprod_avg
-	}
-	* Organize data for graph
-	rename lnrfprod_qty_e lnfprod1
-	rename lnrfprod_qty_o lnfprod2
-	rename lnrfprod_qty_g lnfprod3
-	rename lnrfprod_qty_c lnfprod4
-	reshape long lnfprod, i(IDnum year) j(fuel)
-	collapse (mean) y = lnfprod (semean) se_y = lnfprod, by(fuel combineF)
-	gen combineF_sort = 1 if combineF == 12
-	replace combineF_sort = 2 if combineF == 124
-	replace combineF_sort = 3 if combineF == 123
-	replace combineF_sort = 4 if combineF == 1234
-	sort fuel combineF_sort 
-	gen x = _n
-	gen yu = y + 1.96*se_y
-	gen yl = y - 1.96*se_y
-	* Create figure
-	twoway ///
-	(rcap yl yu x, vert lcolor(gray)) /// code for 95% CI
-	(scatter y x if fuel == 1, mcolor(cranberry) msymbol(circle) msize(5pt)) /// 
-	(scatter y x if fuel == 2, mcolor(navy) msymbol(diamond) msize(5pt)) ///
-	(scatter y x if fuel == 3, mcolor(cyan) msymbol(square) msize(5pt)) ///
-	(scatter y x if fuel == 4, mcolor(olive) msymbol(triangle) msize(5pt)) ///
-	, legend(row(1) order(2 "Electricity" 3 "Oil" 4 "Natural Gas" 5 "Coal") pos(10) ring(0) size(12pt))  ///
-	xlabel(1 "oe" 2 "oge" 3 "oce" 4 "ogce" 5 "oe" 6 "oge" 7 "oce" 8 "ogce" 9 "oe" 10 "oge" 11 "oce" 12 "ogce" 13 "oe" 14 "oge" 15 "oce" 16 "ogce", ///
-	angle(0) noticks labsize(11pt)) xline(4.5, lpattern(dash) lcolor(gray)) xline(8.5, lpattern(dash) lcolor(gray)) xline(12.5, lpattern(dash) lcolor(gray)) ///
-	xtitle("Fuel set",size(12pt)) ytitle("(log) fuel productivity",size(12pt)) graphregion(color(white))
-	graph export "output/graphs/EnergyPFE/fprod_qty_allfuel_bysetf-steel.pdf", replace
-restore
+// preserve 
+// 	* Keep plants I use to estimate production function
+// 	drop if LcombineF == . & FcombineF == .
+// 	keep IDnum year combineF rfprod_dollar_o rfprod_dollar_e lnrfprod_dollar_o lnrfprod_dollar_e rfprod_qty_o rfprod_qty_e lnrfprod_qty_o lnrfprod_qty_e FcombineF ///
+// 			rfprod_dollar_g rfprod_dollar_c lnrfprod_dollar_g lnrfprod_dollar_c rfprod_qty_g rfprod_qty_c lnrfprod_qty_g lnrfprod_qty_c 
+//			
+// 	* Demean productivity
+// 	reg lnrfprod_qty_e 
+// 	predict lnrfprod_avg, xb
+// 	foreach f in e o g c {
+// 		replace lnrfprod_qty_`f' = lnrfprod_qty_`f' - lnrfprod_avg
+// 	}
+// 	* Organize data for graph
+// 	rename lnrfprod_qty_e lnfprod1
+// 	rename lnrfprod_qty_o lnfprod2
+// 	rename lnrfprod_qty_g lnfprod3
+// 	rename lnrfprod_qty_c lnfprod4
+// 	reshape long lnfprod, i(IDnum year) j(fuel)
+// 	collapse (mean) y = lnfprod (semean) se_y = lnfprod, by(fuel combineF)
+// 	gen combineF_sort = 1 if combineF == 12
+// 	replace combineF_sort = 2 if combineF == 124
+// 	replace combineF_sort = 3 if combineF == 123
+// 	replace combineF_sort = 4 if combineF == 1234
+// 	sort fuel combineF_sort 
+// 	gen x = _n
+// 	gen yu = y + 1.96*se_y
+// 	gen yl = y - 1.96*se_y
+// 	* Create figure
+// 	twoway ///
+// 	(rcap yl yu x, vert lcolor(gray)) /// code for 95% CI
+// 	(scatter y x if fuel == 1, mcolor(cranberry) msymbol(circle) msize(5pt)) /// 
+// 	(scatter y x if fuel == 2, mcolor(navy) msymbol(diamond) msize(5pt)) ///
+// 	(scatter y x if fuel == 3, mcolor(cyan) msymbol(square) msize(5pt)) ///
+// 	(scatter y x if fuel == 4, mcolor(olive) msymbol(triangle) msize(5pt)) ///
+// 	, legend(row(1) order(2 "Electricity" 3 "Oil" 4 "Natural Gas" 5 "Coal") pos(10) ring(0) size(12pt))  ///
+// 	xlabel(1 "oe" 2 "oge" 3 "oce" 4 "ogce" 5 "oe" 6 "oge" 7 "oce" 8 "ogce" 9 "oe" 10 "oge" 11 "oce" 12 "ogce" 13 "oe" 14 "oge" 15 "oce" 16 "ogce", ///
+// 	angle(0) noticks labsize(11pt)) xline(4.5, lpattern(dash) lcolor(gray)) xline(8.5, lpattern(dash) lcolor(gray)) xline(12.5, lpattern(dash) lcolor(gray)) ///
+// 	xtitle("Fuel set",size(12pt)) ytitle("(log) fuel productivity",size(12pt)) graphregion(color(white))
+// 	graph export "output/graphs/EnergyPFE/fprod_qty_allfuel_bysetf-steel.pdf", replace
+// restore
 
 * Distribution of fuel productivity per dollar spent across fuel sets
-preserve 
-	* Keep plants I use to estimate production function
-	drop if LcombineF == . & FcombineF == .
-	keep IDnum year combineF rfprod_dollar_o rfprod_dollar_e lnrfprod_dollar_o lnrfprod_dollar_e rfprod_qty_o rfprod_qty_e lnrfprod_qty_o lnrfprod_qty_e FcombineF ///
-			rfprod_dollar_g rfprod_dollar_c lnrfprod_dollar_g lnrfprod_dollar_c rfprod_qty_g rfprod_qty_c lnrfprod_qty_g lnrfprod_qty_c 
-			
-	reg lnrfprod_qty_e 
-	predict lnrfprod_avg, xb
-	foreach f in e o g c {
-		replace lnrfprod_dollar_`f' = lnrfprod_dollar_`f' - lnrfprod_avg
-	}
-	* Organize data for graph
-	rename lnrfprod_dollar_e lnfprod1
-	rename lnrfprod_dollar_o lnfprod2
-	rename lnrfprod_dollar_g lnfprod3
-	rename lnrfprod_dollar_c lnfprod4
-	reshape long lnfprod, i(IDnum year) j(fuel)
-	collapse (mean) y = lnfprod (semean) se_y = lnfprod, by(fuel combineF)
-	gen combineF_sort = 1 if combineF == 12
-	replace combineF_sort = 2 if combineF == 124
-	replace combineF_sort = 3 if combineF == 123
-	replace combineF_sort = 4 if combineF == 1234
-	sort fuel combineF_sort 
-	gen x = _n
-	gen yu = y + 1.96*se_y
-	gen yl = y - 1.96*se_y
-	* Create figure
-	twoway ///
-	(rcap yl yu x, vert lcolor(gray)) /// code for 95% CI
-	(scatter y x if fuel == 1, mcolor(cranberry) msymbol(circle) msize(5pt)) /// 
-	(scatter y x if fuel == 2, mcolor(navy) msymbol(diamond) msize(5pt)) ///
-	(scatter y x if fuel == 3, mcolor(cyan) msymbol(square) msize(5pt)) ///
-	(scatter y x if fuel == 4, mcolor(olive) msymbol(triangle) msize(5pt)) ///
-	, legend(row(1) order(2 "Electricity" 3 "Oil" 4 "Natural Gas" 5 "Coal") pos(10) ring(0) size(12pt))  ///
-	xlabel(1 "oe" 2 "oge" 3 "oce" 4 "ogce" 5 "oe" 6 "oge" 7 "oce" 8 "ogce" 9 "oe" 10 "oge" 11 "oce" 12 "ogce" 13 "oe" 14 "oge" 15 "oce" 16 "ogce", ///
-	angle(0) noticks labsize(11pt)) xline(4.5, lpattern(dash) lcolor(gray)) xline(8.5, lpattern(dash) lcolor(gray)) xline(12.5, lpattern(dash) lcolor(gray)) ///
-	xtitle("Fuel set",size(12pt)) ytitle("(log) fuel productivity",size(12pt)) graphregion(color(white))
-	graph export "output/graphs/EnergyPFE/fprod_dollar_allfuel_bysetf-steel.pdf", replace
-restore
+// preserve 
+// 	* Keep plants I use to estimate production function
+// 	drop if LcombineF == . & FcombineF == .
+// 	keep IDnum year combineF rfprod_dollar_o rfprod_dollar_e lnrfprod_dollar_o lnrfprod_dollar_e rfprod_qty_o rfprod_qty_e lnrfprod_qty_o lnrfprod_qty_e FcombineF ///
+// 			rfprod_dollar_g rfprod_dollar_c lnrfprod_dollar_g lnrfprod_dollar_c rfprod_qty_g rfprod_qty_c lnrfprod_qty_g lnrfprod_qty_c 
+//			
+// 	reg lnrfprod_qty_e 
+// 	predict lnrfprod_avg, xb
+// 	foreach f in e o g c {
+// 		replace lnrfprod_dollar_`f' = lnrfprod_dollar_`f' - lnrfprod_avg
+// 	}
+// 	* Organize data for graph
+// 	rename lnrfprod_dollar_e lnfprod1
+// 	rename lnrfprod_dollar_o lnfprod2
+// 	rename lnrfprod_dollar_g lnfprod3
+// 	rename lnrfprod_dollar_c lnfprod4
+// 	reshape long lnfprod, i(IDnum year) j(fuel)
+// 	collapse (mean) y = lnfprod (semean) se_y = lnfprod, by(fuel combineF)
+// 	gen combineF_sort = 1 if combineF == 12
+// 	replace combineF_sort = 2 if combineF == 124
+// 	replace combineF_sort = 3 if combineF == 123
+// 	replace combineF_sort = 4 if combineF == 1234
+// 	sort fuel combineF_sort 
+// 	gen x = _n
+// 	gen yu = y + 1.96*se_y
+// 	gen yl = y - 1.96*se_y
+// 	* Create figure
+// 	twoway ///
+// 	(rcap yl yu x, vert lcolor(gray)) /// code for 95% CI
+// 	(scatter y x if fuel == 1, mcolor(cranberry) msymbol(circle) msize(5pt)) /// 
+// 	(scatter y x if fuel == 2, mcolor(navy) msymbol(diamond) msize(5pt)) ///
+// 	(scatter y x if fuel == 3, mcolor(cyan) msymbol(square) msize(5pt)) ///
+// 	(scatter y x if fuel == 4, mcolor(olive) msymbol(triangle) msize(5pt)) ///
+// 	, legend(row(1) order(2 "Electricity" 3 "Oil" 4 "Natural Gas" 5 "Coal") pos(10) ring(0) size(12pt))  ///
+// 	xlabel(1 "oe" 2 "oge" 3 "oce" 4 "ogce" 5 "oe" 6 "oge" 7 "oce" 8 "ogce" 9 "oe" 10 "oge" 11 "oce" 12 "ogce" 13 "oe" 14 "oge" 15 "oce" 16 "ogce", ///
+// 	angle(0) noticks labsize(11pt)) xline(4.5, lpattern(dash) lcolor(gray)) xline(8.5, lpattern(dash) lcolor(gray)) xline(12.5, lpattern(dash) lcolor(gray)) ///
+// 	xtitle("Fuel set",size(12pt)) ytitle("(log) fuel productivity",size(12pt)) graphregion(color(white))
+// 	graph export "output/graphs/EnergyPFE/fprod_dollar_allfuel_bysetf-steel.pdf", replace
+// restore
 
 *******************************************************************
 ***	7. Table: distribution of return to one mmBtu of each fuel
 *******************************************************************
-estpost tabstat outrev_mmbtu_g outrev_mmbtu_c outrev_mmbtu_o outrev_mmbtu_e, statistics(p10 p25 p50 p75 p90)
-esttab . using "output/Tables/EnergyPFE/fprod_rev-steel.tex", cells("outrev_mmbtu_g outrev_mmbtu_c outrev_mmbtu_o outrev_mmbtu_e") noobs nomtitle nonumber replace
+// estpost tabstat outrev_mmbtu_g outrev_mmbtu_c outrev_mmbtu_o outrev_mmbtu_e, statistics(p10 p25 p50 p75 p90)
+// esttab . using "output/Tables/EnergyPFE/fprod_rev-steel.tex", cells("outrev_mmbtu_g outrev_mmbtu_c outrev_mmbtu_o outrev_mmbtu_e") noobs nomtitle nonumber replace
+
+
+************************************************************************************************
+***	7. Graph: relationship between coal prices and coal productivity (evidence of coal grades)
+************************************************************************************************
+
+************************************************************************************************
+***	7. Graph: Effect of 2014 oil/gas crash on output --> validation of main result
+************************************************************************************************
+
+
+
+preserve 
+
+capture drop nyear
+egen nyear = total(inrange(year, 2009, 2016)), by(IDnum)
+keep if nyear == 8
+reg LogYqty i.year
+predict lny_res, res
+
+gen Dcoal = 0
+replace Dcoal = 1 if coal > 0 & gas == 0
+gen Dgas = 0 
+replace Dgas = 1 if gas > 0 & coal == 0
+collapse (mean) lny_res, by(year Dcoal Dgas)
+
+graph twoway (connected lny_res year if Dcoal == 1) (connected lny_res year if Dgas == 1), legend(label(1 "Coal users") label(2 "Gas users"))
+
+
+restore 
+
 
 ************************************************************
 ***	8. Estimation of state transition (steel manufacturing) 			
@@ -480,6 +511,7 @@ replace Zone = 99 if Zone == .
 * Keep firms that I observe at least twice subsequently
 order IDnum year LcombineF combineF FcombineF, last
 drop if LcombineF == . & FcombineF == .
+
 
 *** Non-selected state variables (with fixed effects) ***
 
@@ -973,6 +1005,32 @@ export delimited using "Data/Dynamics/MainData_wPipeline-Steel.csv", replace
 restore
 
 
+
+*****************************************************************
+***	8. Estimation of CCP - To know which state variable matters		
+*****************************************************************
+
+*************************************************************************************
+
+drop if FcombineF == .
+drop if year == 2009 | year == 2016
+
+gen lnprofit = log(profit_full2)
+
+gen lnz2 = lnz^2 
+gen lnfprod_e2 = lnfprod_e^2
+gen lnfprod_o2 = lnfprod_o^2
+gen lnpelec_tilde2 = lnpelec_tilde^2
+gen lnpE2 = lnpE^2
+gen logPm2 = logPm^2
+
+*mlogit FcombineF i.combineF lnz lnfprod_e lnfprod_o lnpelec_tilde lnpE logPm lnz2 lnfprod_e2 lnfprod_o2 lnpelec_tilde2 lnpE2 logPm2
+
+gen lnL = log(Lqty)
+gen lnK = log(Kqty)
+
+
+mlogit FcombineF i.combineF lnz lnpelec_tilde lnfprod_e lnfprod_o lnpE logPm i.year i.StateCode, baseoutcome(12)
 
 
 

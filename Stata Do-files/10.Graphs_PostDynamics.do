@@ -7,9 +7,111 @@
 import delimited "Data/Dynamics/MainData_wPipeline-Steel.csv", clear
 rename idnum IDnum
 rename combinef combineF
+tempfile maindata
+save `maindata'
+import delimited "Data/Dynamics/PostEstimation/Data_prod.csv", clear
+rename idnum IDnum
+recast double IDnum
+format IDnum %10.0g
+recast float year
+sort IDnum year
+xtset IDnum year
+merge 1:1 IDnum year using `maindata'
+keep if _merge == 3
+drop _merge
+
+*** Compare relationship between adding a fuel and size/productivity in data and model
+
+* Model predicted probability that firm adds a fuel at t+1
+rename fcombinef FcombineF
+gen pradd_cond = 0
+replace pradd_cond = proge_cond + proce_cond + progce_cond if combineF == 12
+replace pradd_cond = progce_cond if combineF == 123
+replace pradd_cond = progce_cond if combineF == 124
+gen lnpradd_cond = log(pradd_cond)
+gen pradd_uncond = 0
+replace pradd_uncond = proge_uncond + proce_uncond + progce_uncond if combineF == 12
+replace pradd_uncond = progce_uncond if combineF == 123
+replace pradd_uncond = progce_uncond if combineF == 124
+gen lnpradd_uncond = log(pradd_uncond)
+
+gen praddgas_cond = 0
+replace praddgas_cond = proge_cond + progce_cond if combineF == 12
+replace praddgas_cond = progce_cond if combineF == 123
+
+
+gen lny = log(yqty)
+
+reg lnpradd_cond lnz logpm i.year i.combineF 
+predict lnpradd_cond_xb, xb
+replace lnpradd_cond_xb = lnpradd_cond_xb - _b[lnz]*lnz - _b[_cons]
+gen lnpradd_cond_res = lnpradd_cond - lnpradd_cond_xb
+gen pradd_cond_res = exp(lnpradd_cond_res)
+
+graph twoway (scatter pradd_cond_res lnz)
+
+* Do comparison
+* Tag number of years plants are observed 
+sort IDnum year
+xtset IDnum year
+* Define adding a fuel to the mix from last to current year
+gen fuelswitch_togas = 0
+replace fuelswitch_togas = 1 if (combineF == 12 & FcombineF == 124) | (combineF == 12 & FcombineF == 1234) | (combineF == 123 & FcombineF == 1234)
+gen fuelswitch_tocoal = 0
+replace fuelswitch_tocoal = 1 if (combineF == 12 & FcombineF == 123) | (combineF == 12 & FcombineF == 1234) | (combineF == 124 & FcombineF == 1234)
+gen fuelswitch_to = 0
+replace fuelswitch_to = 1 if fuelswitch_togas == 1 | fuelswitch_tocoal == 1
+
+*** BIN SCATTER PLOT ***
+preserve
+	binscatter fuelswitch_to lnz, controls(logpm i.year) nquantiles(30) linetype(lfit) savedata(bindata) replace
+	clear
+	do bindata
+	save bindata,replace
+restore
+
+preserve
+	binscatter pradd_cond lnz, controls(logpm i.year) nquantiles(30) linetype(lfit) savedata(binmodel) replace
+	clear
+	do binmodel
+	save binmodel,replace
+restore
+append using bindata, gen(bindata)
+append using binmodel, gen(binmodel)
+
+twoway lfitci fuelswitch_to lnz if bindata == 1,sort lp(default) lc(navy) fcolor(navy) fintensity(15) astyle(ci) ///
+|| scatter fuelswitch_to lnz if bindata == 1, mc(navy) || ///
+lfit pradd_cond lnz if binmodel == 1,sort lp(dash) lc(cranberry) ///
+|| scatter pradd_cond lnz if binmodel == 1, mc(cranberry)  msymbol(diamond) ///
+xtitle("Residualized (log) Hicks-neutral productivity at t", size(med)) ytitle("Probability of adding a fuel at t+1", size(med)) ///
+legend(ring(0) pos(10) order(3 "Data (with 95% CI)" 5 "Model") size(med)) 
+graph export Output\Graphs\DynamicEstimation\ModelFit_Productivity.pdf, replace 
+
+
+
+
+* Get residual productivity (controlling for input prices, year fixed effects and fuel set)
+reg lnz logpm i.year i.combineF
+predict lnz_res, res
+
+graph twoway (lfitci fuelswitch_to lnz_res) (scatter pradd_cond_res lnz_res, mcolor(red%50)), /// 
+xtitle("(log) productivity", size(med)) ytitle("Probability of adding fuel", size(med)) ///
+legend(label(2 "Linear Projection (Data)") label(3 "Predicted Probability (Model)") size(med) ring(0) pos(12))
+graph export Output\Graphs\DynamicEstimation\ModelFit_Productivity.pdf, replace 
+
+
+**** OUTPUT FOLLOWING 2014 OIL CRASH ***	
+
+
+**** COAL GRADES AND COAL PRICES ***	
+
+
+**** DISTRIBUTION OF FUEL PRODUCTIVITY ***
 reg lnrfprod_qty_e 
+reg lnfprod_e
 predict lnrfprod_avg, xb
 keep IDnum year bo bg bc be g_gmean c_gmean elec_gmean o_gmean ll fprod_g fprod_c fprod_e fprod_o combineF lnrfprod_avg 
+keep IDnum year combineF lnrfprod_avg 
 tempfile maindata
 save `maindata'
 * Import dataset with coal and gas productivity from distribution of counterfactual comparative advantages and reshape to long (after dynamic estimation)
@@ -31,7 +133,7 @@ gen rfprod_c = (bc^(ll/(ll-1)))*exp(lnfprod_c_old)/c_gmean if combineF == 123 | 
 replace rfprod_g = (bg^(ll/(ll-1)))*fprod_g_est/g_gmean if combineF == 12 | combineF == 123
 replace rfprod_c = (bc^(ll/(ll-1)))*fprod_c_est/c_gmean if combineF == 12 | combineF == 124
 gen lnrfprod_g = log(rfprod_g)
-gen lnrfprod_c = log(rfprod_c)
+gen lnrfprod_c = log(rfprod_c) 
 
 * Create graph of distribution by fuel set
 preserve 

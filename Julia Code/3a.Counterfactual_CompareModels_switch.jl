@@ -367,6 +367,9 @@ println(" ")
 
 ### Update posterior conditional and unconditional probabilities of comparative advantages
     M,π_cond,Prnext_long = PosteriorRE_func_zfc_cf(M,Data,grid_indices,p.Κ);
+    # Save conditional distribution of comparative advantages
+    save("/project/6001227/emurrayl/DynamicDiscreteChoice/EnergyCES/Counterfactual/CompareModels/pi_cond.jld2", "π_cond", π_cond);
+
 #
 
 #--------------------------------------------------------------
@@ -1120,11 +1123,235 @@ println(" ")
             return y_fs,E_fs,gas_fs,coal_fs,oil_fs,elec_fs,co2_fs,profit_fs,netprofit_fs,CS_fs,FC_fs,pE_fs,gas,coal,pout_agg;
         end
     #
+    # 3. No Fixed Costs
+        function Welfare_ForwardSimul_noFC(M::Model,Data::DataFrame,p::Par,τ,d_elast::Float64=p.ρ,rscale::Float64=p.η,perfcompl=false)
+            @unpack N,z_fs,pm_fs,pe_fs,ψe_fs,ψo_fs,pg_fs,lnψg_fs,pc_fs,lnψc_fs,gre_fs,cre_fs = M;
+            @unpack S,Tf,T,γg,γc,γo,γe,β,Κ=p;
+            τg = τ[1];
+            τc = τ[2];
+            τo = τ[3];
+            τe = τ[4];
+            p = Par(p; ρ=d_elast, η=rscale);
+            M = Model(M; p =p);
+            println("Demand elasticity = $(p.ρ)")
+            # Update aggregate output price
+            p,M = OutputPrice_func_nogrid(M,Data,p,τ);
+            # Start static of social welfare
+            pout = Array{Float64}(undef,T,S,Tf+1);
+            gas = Array{Float64}(undef,N,S,Tf+1);
+            coal = Array{Float64}(undef,N,S,Tf+1);
+            oil = Array{Float64}(undef,N,S,Tf+1);
+            elec = Array{Float64}(undef,N,S,Tf+1);
+            y = Array{Float64}(undef,N,S,Tf+1);
+            E = Array{Float64}(undef,N,S,Tf+1);
+                δ = 0.0;
+                r = 0.150838;
+            profit = Array{Float64}(undef,N,S,Tf+1);
+            println("      ")
+            println("--------------------------------------------------------------")
+            println("--------      BEGINNING FORWARD SIMULATION     ---------------")
+            println("---------      Main model                ----------")
+            println("---------      No Fixed Costs - Tax (g,c,o,e) = $τ    ----------")
+            println("--------------------------------------------------------------")
+            println("      ")
+            # Year of data: Get firm-level objects: output, fuel prices and productivity, fuel quantities
+            for s = 1:S
+                pout[:,s,1] = p.pout_struc[2:7];
+            end
+            for i = 1:N
+                for s = 1:S
+                    t = Data.year[i]-2009;
+                    pm = exp(Data.logPm[i]);
+                    z = exp(Data.lnz[i]);
+                    # fuel prices (multiplied by geometric mean of fuel)
+                    po = p.po[t+1] + τo*p.ogmean;
+                    pe = exp(Data.lnpelec_tilde[i]) + τe*p.egmean;
+                    # fuel productivity
+                    ψo = exp(Data.lnfprod_o[i]);
+                    ψe = exp(Data.lnfprod_e[i]);
+                    ψg = exp(Data.lnfprod_g[i]);
+                    ψc = exp(Data.lnfprod_c[i]);
+                    # input prices indices
+                    poψo = po/ψo;
+                    peψe = pe/ψe;
+                    if Data.combineF[i] == 12
+                        pfψf = [poψo,peψe];
+                        pE = pE_func(12,pfψf,p);
+                        pin = pinput_func(p.rk[t+1],pm,p.w[t+1],pE,p);
+                    elseif Data.combineF[i] == 123
+                        pc = exp(Data.lnpc_tilde[i]) + τc*p.cgmean;
+                        pcψc = pc/ψc;
+                        pfψf = [poψo,peψe,pcψc];
+                        pE = pE_func(123,pfψf,p);
+                        pin = pinput_func(p.rk[t+1],pm,p.w[t+1],pE,p);
+                    elseif Data.combineF[i] == 124
+                        pg = exp(Data.lnpg_tilde[i]) + τg*p.ggmean;
+                        pgψg = pg/ψg;
+                        pfψf = [poψo,peψe,pgψg];
+                        pE = pE_func(124,pfψf,p);
+                        pin = pinput_func(p.rk[t+1],pm,p.w[t+1],pE,p);
+                    elseif Data.combineF[i] == 1234
+                        pc = exp(Data.lnpc_tilde[i]) + τc*p.cgmean;
+                        pcψc = pc/ψc;
+                        pg = exp(Data.lnpg_tilde[i]) + τg*p.ggmean;
+                        pgψg = pg/ψg;
+                        pfψf = [poψo,peψe,pcψc,pgψg];
+                        pE = pE_func(1234,pfψf,p);
+                        pin = pinput_func(p.rk[t+1],pm,p.w[t+1],pE,p);
+                    end
+                    # Output
+                    y[i,s,1] = output_func_monopolistic(z,pin,p.pout_struc[t+1],t,p);
+                    # profit
+                    profit[i,s,1] = profit_func_monopolistic(z,pin,t,p);
+                    # Energy
+                    E[i,s,1] = ((y[i,s,1]/(p.Ygmean[t+1]*z))^(1/p.η))*((p.αe*pin/pE)^p.σ);
+                    # Fuel quantitiy
+                    oil[i,s,1] = (p.ogmean*E[i,s,1])*((p.βo/po)^p.λ)*(ψo^(p.λ-1))*(pE^p.λ);
+                    elec[i,s,1] = (p.egmean*E[i,s,1])*((p.βe/pe)^p.λ)*(ψe^(p.λ-1))*(pE^p.λ);
+                    if Data.combineF[i] == 12
+                        gas[i,s,1] = 0;
+                        coal[i,s,1] = 0;
+                    elseif Data.combineF[i] == 123
+                        gas[i,s,1] = 0;
+                        coal[i,s,1] = (p.cgmean*E[i,s,1])*((p.βc/pc)^p.λ)*(ψc^(p.λ-1))*(pE^p.λ);
+                    elseif Data.combineF[i] == 124
+                        gas[i,s,1] = (p.ggmean*E[i,s,1])*((p.βg/pg)^p.λ)*(ψg^(p.λ-1))*(pE^p.λ);
+                        coal[i,s,1] = 0;
+                    elseif Data.combineF[i] == 1234
+                        gas[i,s,1] = (p.ggmean*E[i,s,1])*((p.βg/pg)^p.λ)*(ψg^(p.λ-1))*(pE^p.λ);
+                        coal[i,s,1] = (p.cgmean*E[i,s,1])*((p.βc/pc)^p.λ)*(ψc^(p.λ-1))*(pE^p.λ);
+                    end
+                end
+            end
+            # Years of forward simulation (starting one year ahead)
+            @sync @distributed for j = 1:(Tf*S)
+                tf,s = Tuple(CartesianIndices((Tf,S))[j]);
+                println("forward simul = $tf, simul = $s")
+                # Get new aggregate price index
+                Data_fs = deepcopy(Data);
+                Data_fs.combineF .= 1234;
+                grid_indices_init = copy(grid_indices);
+                for i = 1:N
+                    if Data_fs.gas[i] == 0
+                        grid_indices_init.g_re[i] = gre_fs[i,s];
+                    end
+                    if Data_fs.coal[i] == 0
+                        grid_indices_init.c_re[i] = cre_fs[i,s];
+                    end
+                end
+                for i = 1:N
+                    t = Data_fs.year[i]-2009;
+                    Data_fs.lnz[i] = log(z_fs[i,s,tf]);
+                    Data_fs.logPm[i] = log(pm_fs[i,s,tf]);
+                    # fuel prices (multiplied by geometric mean of fuel)
+                    po = p.po[t+1]; 
+                    Data_fs.lnpelec_tilde[i] = log(pe_fs[i,s,tf]);
+                    # fuel productivity
+                    ψo = ψo_fs[i,s,tf]; Data_fs.lnfprod_o[i] = log(ψo);
+                    ψe = ψe_fs[i,s,tf]; Data_fs.lnfprod_e[i] = log(ψe);
+                    # input prices indices
+                    Data_fs.lnfprod_c[i] = lnψc_fs[i,s,tf] + p.lnc_re_grid[grid_indices_init.c_re[i]];
+                    Data_fs.lnpc_tilde[i] = log(pc_fs[i,s,tf]);
+                    Data_fs.lnfprod_g[i] = lnψg_fs[i,s,tf] + p.lng_re_grid[grid_indices_init.g_re[i]];
+                    Data_fs.lnpg_tilde[i] = log(pg_fs[i,s,tf]);
+                end
+                p_fs,M = OutputPrice_func_nogrid(M,Data_fs,p,τ);
+                pout[:,s,tf+1] = p_fs.pout_struc[2:7];
+                # Get everything else
+                for i = 1:N
+                    t = Data_fs.year[i]-2009; 
+                    pm = exp(Data_fs.logPm[i]);
+                    z = exp(Data_fs.lnz[i]);
+                    # fuel prices (multiplied by geometric mean of fuel)
+                    po = p.po[t+1] + τo*p.ogmean;
+                    pe = exp(Data_fs.lnpelec_tilde[i]) + τe*p.egmean; 
+                    pc = exp(Data_fs.lnpc_tilde[i]) + τc*p.cgmean;
+                    pg = exp(Data_fs.lnpg_tilde[i]) + τg*p.ggmean;
+                    # fuel productivity
+                    ψo = ψo_fs[i,s,tf];
+                    ψe = ψe_fs[i,s,tf];
+                    # input prices indices
+                    poψo = po/ψo;
+                    peψe = pe/ψe;
+                    pcψc = pc/exp(Data_fs.lnfprod_c[i]);
+                    pgψg = pg/exp(Data_fs.lnfprod_g[i]);
+                    pfψf = [poψo,peψe,pcψc,pgψg];
+                    pE = pE_func(1234,pfψf,p);
+                    pin = pinput_func(p.rk[t+1],pm,p.w[t+1],pE,p);
+                    # Output
+                    y[i,s,tf+1] = output_func_monopolistic(z,pin,p_fs.pout_struc[t+1],t,p_fs);
+                    # profit
+                    profit[i,s,tf+1] = profit_func_monopolistic(z,pin,t,p_fs);
+                    # Energy
+                    E[i,s,tf+1] = ((y[i,s,tf+1]/(p.Ygmean[t+1]*z))^(1/p.η))*((p.αe*pin/pE)^p.σ);
+                    # Fuel quantitiy
+                    oil[i,s,tf+1] = (p.ogmean*E[i,s,tf+1])*((p.βo/po)^p.λ)*(ψo^(p.λ-1))*(pE^p.λ);
+                    elec[i,s,tf+1] = (p.egmean*E[i,s,tf+1])*((p.βe/pe)^p.λ)*(ψe^(p.λ-1))*(pE^p.λ);
+                    gas[i,s,tf+1] = (p.ggmean*E[i,s,tf+1])*((p.βg/pg)^p.λ)*(exp(Data_fs.lnfprod_g[i])^(p.λ-1))*(pE^p.λ);
+                    coal[i,s,tf+1] = (p.cgmean*E[i,s,tf+1])*((p.βc/pc)^p.λ)*(exp(Data_fs.lnfprod_c[i])^(p.λ-1))*(pE^p.λ);
+                end
+            end
+            # Return aggregates by year forward (only look at last year in data - 2016)
+            y_fs = zeros(Tf+1); E_fs = zeros(Tf+1); gas_fs = zeros(Tf+1); coal_fs = zeros(Tf+1); oil_fs = zeros(Tf+1); elec_fs = zeros(Tf+1); co2_fs = zeros(Tf+1); profit_fs = zeros(Tf+1); CS_fs = zeros(Tf+1);
+            Data_year = groupby(Data,:year); Nt = size(Data_year[end])[1];
+            # pE = pE[end-Nt+1:end,:,:];
+            y = y[end-Nt+1:end,:,:];
+            E = E[end-Nt+1:end,:,:];
+            gas = gas[end-Nt+1:end,:,:];
+            coal = coal[end-Nt+1:end,:,:];
+            oil = oil[end-Nt+1:end,:,:];
+            elec = elec[end-Nt+1:end,:,:];
+            profit = profit[end-Nt+1:end,:,:];
+            pout = pout[end,:,:];
+            co2 = p.γg*gas .+ p.γc*coal .+ p.γo*oil .+ p.γe*elec;
+            # Aggregate output (from rep consumer CES demand)
+            Nfirms = Data_year[end].N[1];
+            demand_shock = exp(p.d_t[end]);
+            rhoterm = (p.ρ-1)/p.ρ;
+            y_s_fs = zeros(p.S,p.Tf+1);
+            for s = 1:p.S
+                for tf = 1:(p.Tf+1)
+                    if perfcompl == true
+                        y_s_fs[s,tf] = demand_shock*minimum(y[:,s,tf]);
+                    else
+                        y_s_fs[s,tf] = ((demand_shock/Nfirms)*(sum(y[:,s,tf].^rhoterm)))^(1/rhoterm);
+                    end
+                end
+            end
+            # Consumer surplus
+            CS_s_fs = zeros(p.S,p.Tf+1);
+            thetaterm = p.θ/(1-p.θ)
+            for tf = 1:(p.Tf+1)
+                for s = 1:p.S
+                    CS_s_fs[s,tf] = thetaterm*(pout[s,tf]^-thetaterm);
+                end
+                CS_fs[tf] = mean(CS_s_fs[:,tf]);
+            end
+            # Average across simulations
+            for tf = 1:Tf+1
+                y_fs[tf] = mean(y_s_fs[:,tf]);
+                for i = 1:Nt
+                    E_fs[tf] += mean(E[i,:,tf]);
+                    gas_fs[tf] += mean(gas[i,:,tf]);
+                    coal_fs[tf] += mean(coal[i,:,tf]);
+                    oil_fs[tf] += mean(oil[i,:,tf]);
+                    elec_fs[tf] += mean(elec[i,:,tf]);
+                    co2_fs[tf] += mean(co2[i,:,tf]);
+                    profit_fs[tf] += mean(profit[i,:,tf]);
+                end
+            end
+            return y_fs,E_fs,gas_fs,coal_fs,oil_fs,elec_fs,co2_fs,profit_fs,CS_fs;
+        end
+    #
 #
 
 ### Set taxes and initialize arrays
-    τ = zeros(4,2);
-    τ[:,2] = [p.γg*p.SCC_india/p.unit,p.γc*p.SCC_india/p.unit,p.γo*p.SCC_india/p.unit,p.γe*p.SCC_india/p.unit];
+    τ = zeros(4,21);
+    τ_ct = [p.γg*p.SCC_india/p.unit,p.γc*p.SCC_india/p.unit,p.γo*p.SCC_india/p.unit,p.γe*p.SCC_india/p.unit];
+    tlevel = [0,0.001,0.01,0.05,0.1,0.25,0.5,0.75,1,2,2.5,5,10,25,50,100,250,500,1000,10000,100000000000]
+    for tr = 1:21
+        τ[:,tr] = tlevel[tr]*τ_ct;
+    end
 #
 
 # Grid of aggregate output price for different tax rates (based on percentiles: 1%, 5%, 25%, 50%, 75%, 95%, 99%)
@@ -1161,6 +1388,10 @@ println(" ")
             for tr = 1:taxeval
                 y[:,tr],E[:,tr],gas[:,tr],coal[:,tr],oil[:,tr],elec[:,tr],co2[:,tr],profit[:,tr],netprofit[:,tr],CS[:,tr],FC[:,tr],pE[:,tr],gas_ind[:,:,:,tr],coal_ind[:,:,:,tr],pout_agg[:,:,tr] = Welfare_ForwardSimul_restricted(M,Data,p,τ[:,tr]);
             end
+        elseif model == "noFC"
+            for tr = 1:taxeval
+                y[:,tr],E[:,tr],gas[:,tr],coal[:,tr],oil[:,tr],elec[:,tr],co2[:,tr],profit[:,tr],CS[:,tr] = Welfare_ForwardSimul_noFC(M,Data,p,τ[:,tr]);
+            end
         end
         return Dict("y"=>y,"E"=>E,"gas"=>gas,"coal"=>coal,"oil"=>oil,"elec"=>elec,"co2"=>co2,"profit"=>profit,"CS"=>CS,"FC"=>FC,"pE"=>pE,"gas_ind"=>gas_ind,"coal_ind"=>coal_ind,"pout_agg"=>pout_agg);
     end
@@ -1171,4 +1402,7 @@ println(" ")
     # Main model
     SimulCompareModels_full = WelfareCompare_Compile(τ,"full");
     save("/project/6001227/emurrayl/DynamicDiscreteChoice/EnergyCES/Counterfactual/CompareModels/SimulCompareModels_full.jld2", "SimulCompareModels_full", SimulCompareModels_full);
+    # No fixed costs (everyone with OGCE)
+    SimulCompareModels_noFC = WelfareCompare_Compile(τ,"noFC");
+    save("/project/6001227/emurrayl/DynamicDiscreteChoice/EnergyCES/Counterfactual/CompareModels/SimulCompareModels_noFC.jld2", "SimulCompareModels_noFC", SimulCompareModels_noFC);
 #

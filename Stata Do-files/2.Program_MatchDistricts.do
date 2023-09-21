@@ -67,7 +67,6 @@ drop if dsl == .
 replace SourceYear = year if SourceYear == . & DistrictCode != 99
 sort ID SourceYear
 save "Data/Panel_Data/Clean_data/ASI_District", replace
-
-erase temp/ASI_CrossSection.dta
+erase "Data/Panel_Data/Raw_data/temp/ASI_CrossSection.dta"
 
 

@@ -169,7 +169,7 @@ foreach j in 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 {
 }
 foreach j in 2009 2010 2011 2012 2013 2014 2015 2016 {
 	foreach block in G {
-		if `j' < 2015 {
+		if `j' <= 2015 {
 			quietly: infile using $ASIpaneldir/DictionaryFiles/`j'/Dictionary`block'.txt, using($ASIpaneldir/`j'/OAS`block'`j'.txt) clear
 			drop block
 			local actualyear=`j'

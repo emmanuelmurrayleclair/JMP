@@ -24,7 +24,7 @@ using CSV, DataFrames, DiscreteMarkovChains, StructTypes, StatsBase, Distributed
 using FiniteDiff, BenchmarkTools, Distances, FileIO, JLD2, PlotThemes
 
 # Load externally written functions
-include("../VFI_Toolbox.jl")
+include("VFI_Toolbox.jl")
 
 println(" ")
 println("-----------------------------------------------------------------------------------------")
@@ -36,6 +36,9 @@ println(" ")
 # Import simulations
     # Baseline 
     @load "Counterfactuals/CompareModels/SimulCompareModels_full.jld2" SimulCompareModels_full
+    @load "Counterfactuals/CompareModels/SimulCompareModels_noFC.jld2" SimulCompareModels_noFC
+    @load "Counterfactuals/CompareModels/SimulCompareModels_nogasFC.jld2" SimulCompareModels_nogasFC
+    @load "Counterfactuals/CompareModels/SimulCompareModels_nogasFC_nosel.jld2" SimulCompareModels_nogasFC_nosel
     @load "Counterfactuals/CompareModels/SimulCompareModels_rswitch.jld2" SimulCompareModels_rswitch
     @load "Counterfactuals/CompareModels/SimulCompareModels_ns.jld2" SimulCompareModels_ns
     @load "Counterfactuals/CompareModels/SimulCompareModels_Eprod.jld2" SimulCompareModels_Eprod
@@ -69,6 +72,9 @@ println(" ")
 # Extract variables of interest 
     # emissions 
     co2_full = SimulCompareModels_full["co2"];
+    co2_noFC = SimulCompareModels_noFC["co2"];
+    co2_nogasFC = SimulCompareModels_nogasFC["co2"];
+    co2_nogasFC_nosel = SimulCompareModels_nogasFC_nosel["co2"];
     co2_rswitch = SimulCompareModels_rswitch["co2"];
     co2_ns = SimulCompareModels_ns["co2"];
     co2_Eprod = SimulCompareModels_Eprod["co2"];
@@ -98,6 +104,9 @@ println(" ")
     co2_Eprod_delast14 = SimulCompareModels_Eprod_nfs_delast14["co2"];
     # Output
     y_full = SimulCompareModels_full["y"];
+    y_noFC = SimulCompareModels_noFC["y"];
+    y_nogasFC = SimulCompareModels_nogasFC["y"];
+    y_nogasFC_nosel = SimulCompareModels_nogasFC_nosel["y"];
     y_rswitch = SimulCompareModels_rswitch["y"];
     y_ns = SimulCompareModels_ns["y"];
     y_Eprod = SimulCompareModels_Eprod["y"];
@@ -140,11 +149,14 @@ println(" ")
 
 # Graphs of tradeoff for forward simulation
     ntau = size(y_full,2);
-    yr_fs = 1:41;
+    yr_fs = 2:41;
     β=0.9;
     # Construct percentage decrease in NPV of co2 emissions 
         # Initialize
         co2_perc_full = zeros(ntau);
+        co2_perc_noFC = zeros(ntau);
+        co2_perc_nogasFC = zeros(ntau);
+        co2_perc_nogasFC_nosel = zeros(ntau);
         co2_perc_rswitch = zeros(ntau);
         co2_perc_ns = zeros(ntau);
         co2_perc_Eprod = zeros(ntau);
@@ -155,6 +167,9 @@ println(" ")
         for tau = 1:ntau
             for t = yr_fs
                 co2_perc_full[tau] += (β^(t-1))*co2_full[t,tau]; 
+                co2_perc_noFC[tau] += (β^(t-1))*co2_noFC[t,tau]; 
+                co2_perc_nogasFC[tau] += (β^(t-1))*co2_nogasFC[t,tau]; 
+                co2_perc_nogasFC_nosel[tau] += (β^(t-1))*co2_nogasFC_nosel[t,tau]; 
                 co2_perc_rswitch[tau] += (β^(t-1))*co2_rswitch[t,tau];
                 co2_perc_ns[tau] += (β^(t-1))*co2_ns[t,tau]; 
                 co2_perc_Eprod[tau] += (β^(t-1))*co2_Eprod[t,tau];
@@ -164,6 +179,11 @@ println(" ")
             end
             if tau > 1
                 co2_perc_full[tau] = ((co2_perc_full[1]-co2_perc_full[tau])/co2_perc_full[1])*100;
+
+                co2_perc_noFC[tau] = ((co2_perc_ns[1]-co2_perc_noFC[tau])/co2_perc_ns[1])*100;
+                co2_perc_nogasFC[tau] = ((co2_perc_ns[1]-co2_perc_nogasFC[tau])/co2_perc_ns[1])*100;
+                co2_perc_nogasFC_nosel[tau] = ((co2_perc_nogasFC_nosel[1]-co2_perc_nogasFC_nosel[tau])/co2_perc_nogasFC_nosel[1])*100;
+
                 co2_perc_rswitch[tau] = ((co2_perc_rswitch[1]-co2_perc_rswitch[tau])/co2_perc_rswitch[1])*100;
                 co2_perc_ns[tau] = ((co2_perc_ns[1]-co2_perc_ns[tau])/co2_perc_ns[1])*100;
                 co2_perc_Eprod[tau] = ((co2_perc_Eprod[1]-co2_perc_Eprod[tau])/co2_perc_Eprod[1])*100;
@@ -173,6 +193,9 @@ println(" ")
             end
         end
         co2_perc_full[1] = 0;
+        co2_perc_noFC[1] = ((co2_perc_ns[1]-co2_perc_noFC[1])/co2_perc_ns[1])*100; 
+        co2_perc_nogasFC[1] = ((co2_perc_ns[1]-co2_perc_nogasFC[1])/co2_perc_ns[1])*100;
+        co2_perc_nogasFC_nosel[1] = 0;
         co2_perc_rswitch[1] = 0;
         co2_perc_ns[1] = 0;
         co2_perc_Eprod[1] = 0;
@@ -199,6 +222,9 @@ println(" ")
     # Construct percentage of NPV of no tax output
         # Initialize
         y_perc_full = zeros(ntau);
+        y_perc_noFC = zeros(ntau);
+        y_perc_nogasFC = zeros(ntau);
+        y_perc_nogasFC_nosel = zeros(ntau);
         y_perc_rswitch = zeros(ntau);
         y_perc_ns = zeros(ntau);
         y_perc_Eprod = zeros(ntau);
@@ -209,6 +235,9 @@ println(" ")
 		for tau = 1:ntau
             for t = yr_fs
                 y_perc_full[tau] += (β^(t-1))*y_full[t,tau]; 
+                y_perc_noFC[tau] += (β^(t-1))*y_noFC[t,tau]; 
+                y_perc_nogasFC[tau] += (β^(t-1))*y_nogasFC[t,tau]; 
+                y_perc_nogasFC_nosel[tau] += (β^(t-1))*y_nogasFC_nosel[t,tau]; 
                 y_perc_rswitch[tau] += (β^(t-1))*y_rswitch[t,tau]; 
                 y_perc_ns[tau] += (β^(t-1))*y_ns[t,tau]; 
                 y_perc_Eprod[tau] += (β^(t-1))*y_Eprod[t,tau]; 
@@ -218,6 +247,11 @@ println(" ")
             end
             if tau > 1
                 y_perc_full[tau] = (y_perc_full[tau]/y_perc_full[1])*100;
+
+                y_perc_noFC[tau] = (y_perc_noFC[tau]/y_perc_ns[1])*100;
+                y_perc_nogasFC[tau] = (y_perc_nogasFC[tau]/y_perc_ns[1])*100;
+                y_perc_nogasFC_nosel[tau] = (y_perc_nogasFC_nosel[tau]/y_perc_nogasFC_nosel[1])*100;
+                
                 y_perc_rswitch[tau] = (y_perc_rswitch[tau]/y_perc_rswitch[1])*100;
                 y_perc_ns[tau] = (y_perc_ns[tau]/y_perc_ns[1])*100;
                 y_perc_Eprod[tau] = (y_perc_Eprod[tau]/y_perc_Eprod[1])*100;
@@ -227,6 +261,9 @@ println(" ")
             end
 		end
         y_perc_full[1] = 100;
+        y_perc_noFC[1] =  (y_perc_noFC[1]/y_perc_ns[1])*100;
+        y_perc_nogasFC[1] = (y_perc_nogasFC[1]/y_perc_ns[1])*100;
+        y_perc_nogasFC_nosel[1] = (y_perc_nogasFC_nosel[1]/y_perc_nogasFC_nosel[1])*100;
         y_perc_rswitch[1] = 100;
         y_perc_ns[1] = 100;
         y_perc_Eprod[1] = 100;
@@ -284,6 +321,13 @@ println(" ")
         legend=:bottomleft,legendfontsize=10, gridalpha=0.2,tickfontsize=10,minorgrid=false)
         savefig("Counterfactuals/CompareModels/Graphs/TaxTradeoff_Full-rswitch.pdf");
     #
+    # Plot comparing full model with no switching and no gas fixed costs
+        plot(y_perc_ns,co2_perc_ns,marker=(:circle,3),label="Full Model",line=(2,:solid));
+        plot!(y_perc_nogasFC,co2_perc_nogasFC,marker=(:square,3),label="No gas FC",line=(2,:solid));
+        plot!(y_perc_nogasFC_nosel,co2_perc_nogasFC_nosel,marker=(:diamond,3),label="No gas FC, no selection",line=(2,:solid));
+        plot!(xlabel="Aggregate Output (% of No Tax)", ylabel="Emission Reduction (% Relative to No Tax)",
+        legend=:bottomleft,legendfontsize=10, gridalpha=0.2,tickfontsize=10,minorgrid=false)
+    # 
     # Test with on fuel and no input substitution
         plot(y_perc_Eprod,co2_perc_Eprod,marker=(:circle,3),label="Eprod",line=(2,:solid));
         plot!(y_perc_nofuelsub,co2_perc_nofuelsub,marker=(:square,3),label="nofuelsub",line=(2,:solid));

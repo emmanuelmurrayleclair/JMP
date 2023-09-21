@@ -402,6 +402,45 @@ for s = 1:p.S
     Data_prod[!, "lnfprod_g$snum"] = lnfprod_g[:,s];
     Data_prod[!, "lnfprod_c$snum"] = lnfprod_c[:,s];
 end
+
+### Get expected choice probability (over the conditional distribution of random effects)
+    Prnext_all = Array{Float64}(undef,M.N,4,p.nc_re,p.ng_re);
+    vfchoice_all = choiceVF_func_grid_zfc(M,Data,grid_indices,p.Κ);
+    for i = 1:M.N
+        for j = 1:(M.nc_re*M.ng_re)
+            ic_re,ig_re = Tuple(CartesianIndices((M.nc_re,M.ng_re))[j]);
+            vtilde = maximum([vfchoice_all[i,1,ic_re,ig_re],vfchoice_all[i,2,ic_re,ig_re],vfchoice_all[i,3,ic_re,ig_re],vfchoice_all[i,4,ic_re,ig_re]]);
+            aux_2 = exp(vfchoice_all[i,1,ic_re,ig_re]-vtilde) + exp(vfchoice_all[i,2,ic_re,ig_re]-vtilde) + exp(vfchoice_all[i,3,ic_re,ig_re]-vtilde) + exp(vfchoice_all[i,4,ic_re,ig_re]-vtilde) ;
+            Prnext_all[i,1,ic_re,ig_re] = exp(vfchoice_all[i,1,ic_re,ig_re]-vtilde)/aux_2;
+            Prnext_all[i,2,ic_re,ig_re] = exp(vfchoice_all[i,2,ic_re,ig_re]-vtilde)/aux_2;
+            Prnext_all[i,3,ic_re,ig_re] = exp(vfchoice_all[i,3,ic_re,ig_re]-vtilde)/aux_2;
+            Prnext_all[i,4,ic_re,ig_re] = exp(vfchoice_all[i,4,ic_re,ig_re]-vtilde)/aux_2;
+        end
+    end
+    Eprnext = zeros(p.F_tot,M.N);
+    Eprnext_uncond = zeros(p.F_tot,M.N);
+    Data_ID = groupby(Data,:IDnum);
+    Nfirms = size(unique(Data.IDnum))[1];
+    for f = 1:4
+        for ifirm = 1:Nfirms
+            for j = 1:size(Data_ID[ifirm],1)
+                i = Data_ID[ifirm].id[j];
+                Eprnext[f,i] = sum( M.π_cond[ifirm,:,:].*Prnext_all[i,f,:,:] );# Version with conditional distr 
+                Eprnext_uncond[f,i] = sum( p.π_uncond.*Prnext_all[i,f,:,:] );  # Version with unconditional distr
+            end
+        end
+    end
+    # Add probabilities to dataset
+    Data_prod[!, "Proe_cond"] = Eprnext[1,:];
+    Data_prod[!, "Proge_cond"] = Eprnext[2,:];
+    Data_prod[!, "Proce_cond"] = Eprnext[3,:];
+    Data_prod[!, "Progce_cond"] = Eprnext[4,:];
+    Data_prod[!, "Proe_uncond"] = Eprnext_uncond[1,:];
+    Data_prod[!, "Proge_uncond"] = Eprnext_uncond[2,:];
+    Data_prod[!, "Proce_uncond"] = Eprnext_uncond[3,:];
+    Data_prod[!, "Progce_uncond"] = Eprnext_uncond[4,:];
+#
+
 # Export dataset
 CSV.write("/project/6001227/emurrayl/DynamicDiscreteChoice/EnergyCES/Results/Data_prod.csv",Data_prod);
 
@@ -447,36 +486,6 @@ CSV.write("/project/6001227/emurrayl/DynamicDiscreteChoice/EnergyCES/Results/Dat
 #--------------------------------------------------------------
 #--------------------------------------------------------------
 # 5. Graphs of model fit
-
-
-### Get expected choice probability (over the conditional distribution of random effects)
-    Prnext_all = Array{Float64}(undef,M.N,4,p.nc_re,p.ng_re);
-    vfchoice_all = choiceVF_func_grid_zfc(M,Data,grid_indices,p.Κ);
-    for i = 1:M.N
-        for j = 1:(M.nc_re*M.ng_re)
-            ic_re,ig_re = Tuple(CartesianIndices((M.nc_re,M.ng_re))[j]);
-            vtilde = maximum([vfchoice_all[i,1,ic_re,ig_re],vfchoice_all[i,2,ic_re,ig_re],vfchoice_all[i,3,ic_re,ig_re],vfchoice_all[i,4,ic_re,ig_re]]);
-            aux_2 = exp(vfchoice_all[i,1,ic_re,ig_re]-vtilde) + exp(vfchoice_all[i,2,ic_re,ig_re]-vtilde) + exp(vfchoice_all[i,3,ic_re,ig_re]-vtilde) + exp(vfchoice_all[i,4,ic_re,ig_re]-vtilde) ;
-            Prnext_all[i,1,ic_re,ig_re] = exp(vfchoice_all[i,1,ic_re,ig_re]-vtilde)/aux_2;
-            Prnext_all[i,2,ic_re,ig_re] = exp(vfchoice_all[i,2,ic_re,ig_re]-vtilde)/aux_2;
-            Prnext_all[i,3,ic_re,ig_re] = exp(vfchoice_all[i,3,ic_re,ig_re]-vtilde)/aux_2;
-            Prnext_all[i,4,ic_re,ig_re] = exp(vfchoice_all[i,4,ic_re,ig_re]-vtilde)/aux_2;
-        end
-    end
-    Eprnext = zeros(p.F_tot,M.N);
-    Eprnext_uncond = zeros(p.F_tot,M.N);
-    Data_ID = groupby(Data,:IDnum);
-    Nfirms = size(unique(Data.IDnum))[1];
-    for f = 1:4
-        for ifirm = 1:Nfirms
-            for j = 1:size(Data_ID[ifirm],1)
-                i = Data_ID[ifirm].id[j];
-                Eprnext[f,i] = sum( M.π_cond[ifirm,:,:].*Prnext_all[i,f,:,:] );# Version with conditional distr 
-                Eprnext_uncond[f,i] = sum( p.π_uncond.*Prnext_all[i,f,:,:] );  # Version with unconditional distr
-            end
-        end
-    end
-#
 
 ### Create graphs of model fit
     #1. Graphs of overall distribution
