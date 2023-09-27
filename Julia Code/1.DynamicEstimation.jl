@@ -196,8 +196,8 @@ println(" ")
         nstate = 5;     # Number of states in multivariate markov chain
         ngrid = 4;      # Number of grid points per 
         Πs = nothing;            # Transition matrix
-        lnSgrid = nothing; # grid in logs
-        Sgrid = nothing;          # grid in levels
+        lnSgrid = nothing;       # grid in logs
+        Sgrid = nothing;         # grid in levels
         
         # Price/productivity of gas non-persistent process
         n_g    = 4                                              ;  # Size of grid
@@ -234,10 +234,10 @@ println(" ")
         # Productivity of coal and gas, joint unconditional distribution of random effects
         π_uncond = nothing         
         # Current Period profit               
-        πgrid_oe = Array{Float64}(undef,p.T,ngrid^nstate,n_c,n_g,nc_re,ng_re)                      ;
+        πgrid_oe = Array{Float64}(undef,p.T,ngrid^nstate,n_c,n_g,nc_re,ng_re)                       ;
         πgrid_oge = Array{Float64}(undef,p.T,ngrid^nstate,n_c,n_g,nc_re,ng_re)                      ;
         πgrid_oce = Array{Float64}(undef,p.T,ngrid^nstate,n_c,n_g,nc_re,ng_re)                      ;
-        πgrid_ogce = Array{Float64}(undef,p.T,ngrid^nstate,n_c,n_g,nc_re,ng_re)                      ;
+        πgrid_ogce = Array{Float64}(undef,p.T,ngrid^nstate,n_c,n_g,nc_re,ng_re)                     ;
         # Expected Value Functions (single agent)
         V_itermax = 1000          
         nconnect=2;            # Number of possible pipeline connections (connected and not connected)                                                        ;

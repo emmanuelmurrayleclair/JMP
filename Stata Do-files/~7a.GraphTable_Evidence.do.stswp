@@ -332,7 +332,9 @@ preserve
 	gen lncoal = log(TotCoal_mmbtu)
 	gen lnoil = log(TotOil_mmbtu)
 	gen lnelec = log(elecb_mmbtu)
-
+	
+	reg lngas i.year 
+	
 	egen fueltot = rowtotal(TotGas_mmbtu TotCoal_mmbtu TotOil_mmbtu elecb_mmbtu)
 	gen s_gas = TotGas_mmbtu/fueltot
 	gen s_coal = TotCoal_mmbtu/fueltot

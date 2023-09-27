@@ -88,18 +88,6 @@ legend(ring(0) pos(10) order(3 "Data (with 95% CI)" 5 "Model") size(med))
 graph export Output\Graphs\DynamicEstimation\ModelFit_Productivity.pdf, replace 
 
 
-
-
-* Get residual productivity (controlling for input prices, year fixed effects and fuel set)
-reg lnz logpm i.year i.combineF
-predict lnz_res, res
-
-graph twoway (lfitci fuelswitch_to lnz_res) (scatter pradd_cond_res lnz_res, mcolor(red%50)), /// 
-xtitle("(log) productivity", size(med)) ytitle("Probability of adding fuel", size(med)) ///
-legend(label(2 "Linear Projection (Data)") label(3 "Predicted Probability (Model)") size(med) ring(0) pos(12))
-graph export Output\Graphs\DynamicEstimation\ModelFit_Productivity.pdf, replace 
-
-
 **** OUTPUT FOLLOWING 2014 OIL CRASH ***	
 
 

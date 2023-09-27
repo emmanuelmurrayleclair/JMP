@@ -27,9 +27,9 @@ grstyle anglestyle vertical_tick horizontal
 
 *** Emmanuel ***
 * Laptop
-cd "C:\Users\Emmanuel\Dropbox\JMP"
+// cd "C:\Users\Emmanuel\Dropbox\JMP"
 * Desktop
-// cd "D:\Users\Emmanuel\Dropbox\JMP"
+cd "D:\Users\Emmanuel\Dropbox\JMP"
 
 *---------------------------------------------------------------------------------------------------------
 * All steps in order: 

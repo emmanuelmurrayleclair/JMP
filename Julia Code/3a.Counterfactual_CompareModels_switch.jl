@@ -369,7 +369,6 @@ println(" ")
     M,π_cond,Prnext_long = PosteriorRE_func_zfc_cf(M,Data,grid_indices,p.Κ);
     # Save conditional distribution of comparative advantages
     save("/project/6001227/emurrayl/DynamicDiscreteChoice/EnergyCES/Counterfactual/CompareModels/pi_cond.jld2", "π_cond", π_cond);
-
 #
 
 #--------------------------------------------------------------

@@ -316,25 +316,19 @@ println(" ")
     #
     # Plot comparing full model with restricted switching
         plot(y_perc_full,co2_perc_full,marker=(:circle,3),label="Full Model",line=(2,:solid));
-        plot!(y_perc_rswitch,co2_perc_rswitch,marker=(:square,3),label="No Switching",line=(2,:solid));
+        plot!(y_perc_rswitch,co2_perc_rswitch,marker=(:square,3),label="No Switching",line=(2,:dash));
         plot!(xlabel="Aggregate Output (% of No Tax)", ylabel="Emission Reduction (% Relative to No Tax)",
         legend=:bottomleft,legendfontsize=10, gridalpha=0.2,tickfontsize=10,minorgrid=false)
         savefig("Counterfactuals/CompareModels/Graphs/TaxTradeoff_Full-rswitch.pdf");
     #
     # Plot comparing full model with no switching and no gas fixed costs
-        plot(y_perc_ns,co2_perc_ns,marker=(:circle,3),label="Full Model",line=(2,:solid));
-        plot!(y_perc_nogasFC,co2_perc_nogasFC,marker=(:square,3),label="No gas FC",line=(2,:solid));
-        plot!(y_perc_nogasFC_nosel,co2_perc_nogasFC_nosel,marker=(:diamond,3),label="No gas FC, no selection",line=(2,:solid));
+        plot(y_perc_full,co2_perc_full,marker=(:circle,3),label="Full Model",line=(2,:solid));
+        plot!(y_perc_nogasFC,co2_perc_nogasFC,marker=(:square,3),label="No Gas Fixed Cost",line=(2,:dash));
+        plot!(y_perc_noFC,co2_perc_noFC,marker=(:diamond,3),label="No Fixed Cost",line=(2,:dash));
         plot!(xlabel="Aggregate Output (% of No Tax)", ylabel="Emission Reduction (% Relative to No Tax)",
         legend=:bottomleft,legendfontsize=10, gridalpha=0.2,tickfontsize=10,minorgrid=false)
+        savefig("Counterfactuals/CompareModels/Graphs/TaxTradeoff_Full-noFC.pdf");
     # 
-    # Test with on fuel and no input substitution
-        plot(y_perc_Eprod,co2_perc_Eprod,marker=(:circle,3),label="Eprod",line=(2,:solid));
-        plot!(y_perc_nofuelsub,co2_perc_nofuelsub,marker=(:square,3),label="nofuelsub",line=(2,:solid));
-        plot!(y_perc_noinputsub,co2_perc_noinputsub,marker=(:square,3),label="noinputsub",line=(2,:solid));
-        plot!(xlabel="Aggregate Output (% of No Tax)", ylabel="Emission Reduction (% Relative to No Tax)",
-        legend=:bottomleft,legendfontsize=10, gridalpha=0.2,tickfontsize=10,minorgrid=false)
-    #
     # Plot comparing full model with no switching
         plot(y_perc_full,co2_perc_full,marker=(:circle,3),label="Full Model",line=(2,:solid));
         plot!(y_perc_ns,co2_perc_ns,marker=(:square,3),label="No Switching",line=(2,:solid));
@@ -343,8 +337,8 @@ println(" ")
         savefig("Counterfactuals/CompareModels/Graphs/TaxTradeoff_Full-Ns.pdf");
     #
     # Plot comparing No switching with energy productivity
-        plot(y_perc_ns,co2_perc_ns,marker=(:square,3),label="No Switching",line=(2,:solid));
-        plot!(y_perc_Eprod,co2_perc_Eprod,marker=(:star,3),label="No Switching and No Fuel Productivity",line=(2,:solid));
+        plot(y_perc_ns,co2_perc_ns,marker=(:square,3),label="Full Model",line=(2,:solid));
+        plot!(y_perc_Eprod,co2_perc_Eprod,marker=(:square,3),label="No Fuel Productivity Heterogeneity",line=(2,:dash));
         plot!(xlabel="Aggregate Output (% of No Tax)", ylabel="Emission Reduction (% Relative to No Tax)",
         legend=:bottomleft,legendfontsize=10, gridalpha=0.2,tickfontsize=10,minorgrid=false)
         savefig("Counterfactuals/CompareModels/Graphs/TaxTradeoff_Ns-Eprod.pdf");
@@ -384,8 +378,8 @@ println(" ")
 
     # Comparing full model, energy productivity and no input substitution 
         plot(y_perc_full,co2_perc_full,marker=(:circle,3),label="Full Model",line=(2,:solid));
-        plot!(y_perc_Eprod,co2_perc_Eprod,marker=(:square,3),label="No Switching and No Fuel Productivity",line=(2,:solid));
-        plot!(y_perc_noinputsub,co2_perc_noinputsub,marker=(:diamond,3),label="+ No Input Substitution",line=(2,:solid));
+        plot!(y_perc_Eprod,co2_perc_Eprod,marker=(:square,3),label="No Fuel Productivity Heterogeneity",line=(2,:dash));
+        plot!(y_perc_noinputsub,co2_perc_noinputsub,marker=(:diamond,3),label="No Input Substitution",line=(2,:dashdot));
         plot!(xlabel="Aggregate Output (% of No Tax)", ylabel="Emission Reduction (% Relative to No Tax)",
         legend=:bottomleft,legendfontsize=10, gridalpha=0.2,tickfontsize=10,minorgrid=false)
         savefig("Counterfactuals/CompareModels/Graphs/TaxTradeoff_Full-Eprod-noinputprod.pdf");
@@ -625,29 +619,36 @@ println(" ")
         propcoal_full[tau] = mean(Dcoal_ind_full[:,:,:,tau]);
         propcoal_rswitch[tau] = mean(Dcoal_ind_rswitch[:,:,:,tau]);
     end
-    # Graph of energy prices
+    # Graph of tradeoff across tax rates
     xaxis1 = 100*[0,0.001,0.01,0.05,0.1,0.25,0.5,0.75,1,2,2.5,5,10,25,50,100,250,500,1000,10000,100000000000]
+    plot(log.(xaxis1[1:15]),co2_perc_full[1:15], line=(2,:solid),label="Emission reduction (% of no tax)");
+    plot!(log.(xaxis1[1:15]),y_perc_full[1:15],line=(2,:dash),label="Output (% of no tax)");
+    plot!(xlabel="Level of Carbon Tax (% of average coal price)",
+    legend=:bottomright,legendfontsize=10,tickfontsize=10,gridalpha=0.2,minorgrid=false,
+    xticks = (collect(-2.5:2.5:7.5),[0 1 12 150 1800]))
+    savefig("Counterfactuals/CompareModels/Graphs/TaxLevel_Tradeoff-full.pdf");
+    # Energy price across tax rates
     plot(log.(xaxis1[1:15]),pE_full_avg[1:15], line=(2,:solid),label="Full Model");
     plot!(log.(xaxis1[1:15]),pE_rswitch_avg[1:15],line=(2,:dash),label="No Switching");
     plot!(xlabel="Level of Carbon Tax (% of average coal price)", ylabel="Average Price of Energy",
     legend=:topleft,legendfontsize=10,tickfontsize=10,gridalpha=0.2,minorgrid=false,
     xticks = (collect(-2.5:2.5:7.5),[0 1 12 150 1800]))
     savefig("Counterfactuals/CompareModels/Graphs/TaxLevel_pE_Full-rswitch.pdf");
-    # Graph of profit
+    # Graph of profit across tax rates 
     plot(log.(xaxis1[1:20]),profit_full_avg[1:20],line=(2,:solid),label="Full Model");
     plot!(log.(xaxis1[1:20]),profit_rswitch_avg[1:20],line=(2,:dash),label="No Switching");
     plot!(xlabel="Level of Carbon Tax (% of average coal price)", ylabel="Average Profits",
     legend=:bottomleft,legendfontsize=10,tickfontsize=10,gridalpha=0.2,minorgrid=false,
     xticks = (collect(0:3:12),[1 20 400 8000 160000]))
     savefig("Counterfactuals/CompareModels/Graphs/TaxLevel_profit_Full-rswitch.pdf");
-    # Graph of proprtion of plants using gas
+    # Graph of proprtion of plants using gas across tax rates
     plot(log.(xaxis1[1:20]),propgas_full[1:20],line=(2,:solid),label="Full Model");
     plot!(log.(xaxis1[1:20]),propgas_rswitch[1:20],line=(2,:dash),label="No Switching");
     plot!(xlabel="Level of Carbon Tax (% of average coal price)", ylabel="Proportion of Plants using Natural",
     legend=:bottomleft,legendfontsize=10,tickfontsize=10,gridalpha=0.2,minorgrid=false,ylims=(0.15,0.25),yticks = 0.1:0.02:0.3,
     xticks = (collect(0:3:12),[1 20 400 8000 160000]))
     savefig("Counterfactuals/CompareModels/Graphs/TaxLevel_Dgas_Full-rswitch.pdf");
-    # Graph of proprtion of plants using coal
+    # Graph of proprtion of plants using coal across tax rates
     plot(log.(xaxis1[1:20]),propcoal_full[1:20],line=(2,:solid),xticks = 0,label="Full Model");
     plot!(log.(xaxis1[1:20]),propcoal_rswitch[1:20],line=(2,:dash),xticks = 0,label="No Switching");
     plot!(xlabel="Level of Carbon Tax (% of average coal price)", ylabel="Proportion of Plants using Coal",
