@@ -1,0 +1,57 @@
+<h1 id="asi-cleaning-tutorial">ASI Cleaning Tutorial</h1>
+<p>This tutorial explains how to get the most detailed version of the Indian Survey of Industries (ASI) dataset.</p>
+<p>It includes plant identifiers to track plants over time and district-level information for any plant that was observed at least once between 2007 and 2010.</p>
+<h3 id="this-tutorial-allows-you-to-access-clean-and-merge-two-datasets-">This tutorial allows you to access, clean, and merge two datasets:</h3>
+<ol>
+<li>The public version of the ASI (<strong>Public ASI</strong>), which <em>includes</em> district-level information but <em>excludes</em> plant identifiers.</li>
+<li>The restricted version of the ASI (<strong>Private ASI</strong>), which <em>includes</em> plant identifiers but <em>exludes</em> district-level information.</li>
+</ol>
+<h1 id="table-of-contents">Table of contents</h1>
+<ol>
+<li><a href="#parta">Part A: Access and clean the Public ASI</a><ul>
+<li><a href="#preliminaries">Preliminaries</a></li>
+</ul>
+</li>
+</ol>
+<h2 id="part-a-access-and-clean-the-public-asi-a-name-parta-a-">Part A: Access and clean the Public ASI <a name="parta"></a></h2>
+<p>Upon performing this step, you will obtain a clean Stata dataset titled <strong>ASI_Clean.dta</strong></p>
+<h3 id="a-1-preliminaries-a-name-preliminaries-a-">A.1 Preliminaries <a name="preliminaries"></a></h3>
+<p><em>For this part, you will need a windows computer.</em></p>
+<ol>
+<li>Head over to <a href="https://www.microdata.gov.in/nada43/index.php/catalog/ASI">https://www.microdata.gov.in/nada43/index.php/catalog/ASI</a></li>
+<li>For each sample year, clic on the dataset for the corresponding sample year[^1].</li>
+<li>Clic &quot;GET MICRODATA&quot;<ol>
+<li>You will need to create an account and log-in. This will be very fast</li>
+</ol>
+</li>
+<li>You will now see a page that says <strong>Application for Restricted Access Dataset</strong><ol>
+<li>Under <em>Type of Dataset</em>, choose ASI</li>
+<li>Provide the intended use for the data (I usually write &quot;research&quot;)</li>
+<li>clic <em>Submit</em></li>
+</ol>
+</li>
+<li>Download and unzip the datafiles in a folder</li>
+<li>As part of the extracted files, you will find an installer for Nesstar title <em>NesstarExploreInstaller</em>. Install the program. <strong>You only need to do this once</strong></li>
+<li>Open the .Nesstar dataset with Nesstar. The dataset is separated into blocks containing different sets of variables<ol>
+<li>Block A: Identification</li>
+<li>Block B: Owner Details</li>
+<li>Block C: Fixed Assets</li>
+<li>Block D: Working Capital and Loans</li>
+<li>Block E: Employment and Labour Cost</li>
+<li>Block F: Other Expenses</li>
+<li>Block G: Other Ouputs/Receipts</li>
+<li>Block H: Inputs (Domestic)</li>
+<li>Block I: Inputs (Imported)</li>
+<li>Block J: Outputs Manufactured</li>
+</ol>
+</li>
+<li>In Nesstar, under &quot;File&quot;, clic on &quot;Export Dataset(s)...&quot; and save all the blocks as .csv in a year-specific folder</li>
+<li>Repeat 1-8 for each year you want data. If you want district-level information, make sure to include &quot;2006-07&quot; until &quot;2009-10&quot;.<ol>
+<li>Make sure that the block names are consistent across years. You should now have a folder that looks like that:</li>
+</ol>
+</li>
+</ol>
+<pre><code>  |           All Years           | Single Year Example |
+  | <span class="hljs-symbol">:-----------------------------</span>: | <span class="hljs-symbol">:--------------------</span>: |
+  | ![prelim1](PartA_prelim1.png) | ![prelim2](PartA_prelim2.png) |
+</code></pre><p>[^1]: For example, if you want data for 2021, clic on <em>Annual Survey of Industries 2020-21</em></p>
