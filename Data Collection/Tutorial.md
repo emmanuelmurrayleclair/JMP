@@ -1,4 +1,4 @@
-* ASI Cleaning Tutorial
+# ASI Cleaning Tutorial
 
 This tutorial explains how to get the most detailed version of the Indian Survey of Industries (ASI) dataset.
 
