@@ -1,4 +1,4 @@
-# ASI Cleaning Tutorial
+* ASI Cleaning Tutorial
 
 This tutorial explains how to get the most detailed version of the Indian Survey of Industries (ASI) dataset.
 
@@ -12,7 +12,7 @@ It includes plant identifiers to track plants over time and district-level infor
 # Table of contents
 
 1. [Part A: Access and clean the Public ASI](#PartA)
-   1.1 [Preliminaries](#Preliminaries)
+   - [Preliminaries](#Preliminaries)
 
 ## Part A: Access and clean the Public ASI <a name="PartA"></a>
 
@@ -22,7 +22,7 @@ Upon performing this step, you will obtain a clean Stata dataset titled.
 
 *For this part, you will need a windows computer.*
 
-1. Head over to [https://www.microdata.gov.in/nada43/index.php/catalog/ASI](https://www.microdata.gov.in/nada43/index.php/catalog/ASIhttps:/)
+1. Head over to [https://www.microdata.gov.in/nada43/index.php/catalog/ASI](https://www.microdata.gov.in/nada43/index.php/catalog/ASI)
 2. For each sample year, clic on the dataset for the corresponding sample year[^1].
 3. Clic "GET MICRODATA"
    1. You will need to create an account and log-in. This will be very fast
@@ -43,11 +43,11 @@ Upon performing this step, you will obtain a clean Stata dataset titled.
    8. Block H: Inputs (Domestic)
    9. Block I: Inputs (Imported)
    10. Block J: Outputs Manufactured
-       ![alt text](Nesstar_example.png)
 8. In Nesstar, under "File", clic on "Export Dataset(s)..." and save all the blocks as .csv in a year-specific folder
-9. Repeat 1-8 for each year you want data. If you want district-level information, make sure to include "2006-07" until "2009-10". 
-    1. Make sure that the block names are consistent across years. You should now have a folder that looks like that:
-    All Years             |  Single Year Example
-    :-------------------------:|:-------------------------:
-    ![](PartA_prelim1.png)  |  ![](partA_prelim2.png)
+9. Repeat 1-8 for each year you want data. If you want district-level information, make sure to include "2006-07" until "2009-10".
+   1. Make sure that the block names are consistent across years. You should now have a folder that looks like that:
+      |       All Years       |  Single Year Example  |
+      | :----------------------: | :----------------------: |
+      | ![](PartA_prelim1.png) | ![](partA_prelim2.png) |
+
 [^1]: For example, if you want data for 2021, clic on *Annual Survey of Industries 2020-21*
