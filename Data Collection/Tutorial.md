@@ -49,5 +49,5 @@ Upon performing this step, you will obtain a clean Stata dataset titled **ASI_Cl
       |       All Years                 |  Single Year Example  |
       | :----------------------:        | :----------------------: |
       | ![prelim1](PartA_prelim1.png)   | ![prelim2](partA_prelim2.png) |
-![prelim2](partA_prelim2.png
+![prelim2](partA_prelim2.png)
 [^1]: For example, if you want data for 2021, clic on *Annual Survey of Industries 2020-21*
