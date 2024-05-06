@@ -16,7 +16,7 @@ It includes plant identifiers to track plants over time and district-level infor
 
 ## Part A: Access and clean the Public ASI <a name="partA"></a>
 
-Upon performing this step, you will obtain a clean Stata dataset titled.
+Upon performing this step, you will obtain a clean Stata dataset titled **ASI_Clean.dta**
 
 ### A.1 Preliminaries <a name="preliminaries"></a>
 
@@ -49,5 +49,5 @@ Upon performing this step, you will obtain a clean Stata dataset titled.
       |       All Years                 |  Single Year Example  |
       | :----------------------:        | :----------------------: |
       | ![prelim1](PartA_prelim1.png)   | ![prelim2](partA_prelim2.png) |
-
+![prelim2](partA_prelim2.png
 [^1]: For example, if you want data for 2021, clic on *Annual Survey of Industries 2020-21*
