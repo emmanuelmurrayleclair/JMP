@@ -4,21 +4,21 @@ This tutorial explains how to get the most detailed version of the Indian Survey
 
 It includes plant identifiers to track plants over time and district-level information for any plant that was observed at least once between 2007 and 2010.
 
-### This tutorial requires you to access, clean, and merge two datasets:
+### This tutorial allows you to access, clean, and merge two datasets:
 
 1. The public version of the ASI (**Public ASI**), which *includes* district-level information but *excludes* plant identifiers.
 2. The restricted version of the ASI (**Private ASI**), which *includes* plant identifiers but *exludes* district-level information.
 
 # Table of contents
 
-1. [Part A: Access and clean the Public ASI](#PartA)
-   - [Preliminaries](#Preliminaries)
+1. [Part A: Access and clean the Public ASI](#partA)
+   - [Preliminaries](#preliminaries)
 
-## Part A: Access and clean the Public ASI <a name="PartA"></a>
+## Part A: Access and clean the Public ASI <a name="partA"></a>
 
 Upon performing this step, you will obtain a clean Stata dataset titled.
 
-### A.1 Preliminaries <a name="Preliminaries"></a>
+### A.1 Preliminaries <a name="preliminaries"></a>
 
 *For this part, you will need a windows computer.*
 
@@ -46,8 +46,8 @@ Upon performing this step, you will obtain a clean Stata dataset titled.
 8. In Nesstar, under "File", clic on "Export Dataset(s)..." and save all the blocks as .csv in a year-specific folder
 9. Repeat 1-8 for each year you want data. If you want district-level information, make sure to include "2006-07" until "2009-10".
    1. Make sure that the block names are consistent across years. You should now have a folder that looks like that:
-      |       All Years       |  Single Year Example  |
-      | :----------------------: | :----------------------: |
-      | ![prelim1](PartA_prelim1.png) | ![prelim2](partA_prelim2.png) |
+      |       All Years                 |  Single Year Example  |
+      | :----------------------:        | :----------------------: |
+      | ![prelim1](PartA_prelim1.png)   | ![prelim2](partA_prelim2.png) |
 
 [^1]: For example, if you want data for 2021, clic on *Annual Survey of Industries 2020-21*
