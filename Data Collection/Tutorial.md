@@ -11,10 +11,10 @@ It includes plant identifiers to track plants over time and district-level infor
 
 # Table of contents
 
-1. [Part A: Access and clean the Public ASI](#partA)
+1. [Part A: Access and clean the Public ASI](#parta)
    - [Preliminaries](#preliminaries)
 
-## Part A: Access and clean the Public ASI <a name="partA"></a>
+## Part A: Access and clean the Public ASI <a name="parta"></a>
 
 Upon performing this step, you will obtain a clean Stata dataset titled **ASI_Clean.dta**
 
@@ -46,8 +46,10 @@ Upon performing this step, you will obtain a clean Stata dataset titled **ASI_Cl
 8. In Nesstar, under "File", clic on "Export Dataset(s)..." and save all the blocks as .csv in a year-specific folder
 9. Repeat 1-8 for each year you want data. If you want district-level information, make sure to include "2006-07" until "2009-10".
    1. Make sure that the block names are consistent across years. You should now have a folder that looks like that:
-      |       All Years                 |  Single Year Example  |
-      | :----------------------:        | :----------------------: |
-      | ![prelim1](PartA_prelim1.png)   | ![prelim2](partA_prelim2.png) |
-![prelim2](partA_prelim2.png)
+
+
+      |           All Years           | Single Year Example |
+      | :-----------------------------: | :--------------------: |
+      | ![prelim1](PartA_prelim1.png) | ![prelim2](test.png) |
+
 [^1]: For example, if you want data for 2021, clic on *Annual Survey of Industries 2020-21*
